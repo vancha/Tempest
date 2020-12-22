@@ -3,9 +3,6 @@ name = "tempest"
 version = "0.1.0"
 edition = "2018"
 
-[dependencies]
-systemstat = "0.1.6"
-
 [dependencies.gtk]
 version = "0.8.1"
 features = ["v3_24"]

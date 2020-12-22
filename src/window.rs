@@ -1,8 +1,5 @@
 use gtk::prelude::*;
-extern crate systemstat;
-
-use systemstat::{System, Platform};
-
+use std::fs;
 
 pub struct Window {
     pub widget: gtk::ApplicationWindow,//window to hold the layout
@@ -11,18 +8,21 @@ pub struct Window {
 
 impl Window {
 
+
     //call when window object is created
     pub fn start_timer(self) {
 
         let timerclojure = move || {
-            let sys = System::new();
-            match sys.cpu_temp() {//can we get the temperatures from the sys object?
-                Ok(cpu_temp) => { self.label.set_label(format!("{} {}",cpu_temp.to_string().as_str()," °C").as_str());},//yes, show it!
-                Err(_) =>{},//no, do nothing
-            }
+            let temp =  fs::read_to_string("/sys/class/thermal/thermal_zone0/temp")
+            .or::<String>(Ok("0".to_string()))
+            .map(|val| val.split_whitespace().collect::<String>())
+            .map(|val| val.parse::<f32>().unwrap())
+            .map(|val| val / 1000.0)
+            .unwrap();
+            self.label.set_label(format!("{:?} °C",temp).as_str());
             Continue(true)//required return type for a timer :)
         };
-        gtk::timeout_add(2000,timerclojure);
+        gtk::timeout_add(1000,timerclojure);
     }
 
 
