@@ -3,6 +3,10 @@ name = "tempest"
 version = "0.1.0"
 edition = "2018"
 
+[dependencies]
+libmedium = "0.5.0"
+
+
 [dependencies.gtk]
 version = "0.8.1"
 features = ["v3_24"]
